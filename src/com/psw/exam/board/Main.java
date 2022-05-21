@@ -56,7 +56,8 @@ public class Main {
 				System.out.printf("번호 : %d\n", article.id);
 				System.out.printf("제목 : %s\n", article.title);
 				System.out.printf("내용 : %s\n", article.body);
-			} else if (cmd.equals("/usr/article/write")) {
+			}
+			else if (cmd.equals("/usr/article/write")) {
 				System.out.println("- 게시물 등록 - ");
 				System.out.printf("제목: ");
 				String title = sc.nextLine();
@@ -68,6 +69,8 @@ public class Main {
 
 				Article article = new Article(id, title, body);
 				lastArticle = article;
+				
+				articles.add(article);
 
 				System.out.println("입력된 객체 : " + article);
 
