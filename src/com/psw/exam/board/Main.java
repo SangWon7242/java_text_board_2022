@@ -8,11 +8,11 @@ import java.util.Scanner;
 
 public class Main {
 	static void makeTestData(List<Article> articles) {
-		for ( int i = 0; i < 100; i++ ) {
+		for (int i = 0; i < 100; i++) {
 			int id = i + 1;
 			articles.add(new Article(id, "제목" + id, "내용" + id));
 		}
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -40,43 +40,7 @@ public class Main {
 			if (rq.getUrlPath().equals("exit")) {
 				break;
 			} else if (rq.getUrlPath().equals("/usr/article/list")) {
-				System.out.println("- 게시물 리스트 -");
-				System.out.println("-----------------");
-				System.out.println("번호 / 제목");
-				System.out.println("-----------------");
-				
-				List<Article> filteredArticles = articles;
-				
-				if ( params.containsKey("searchKeyword")) {
-					String searchKeyword = params.get("searchKeyword");
-					
-					filteredArticles = new ArrayList<>();
-					
-					for ( Article article : articles) {
-						boolean matched = article.title.contains(searchKeyword) || article.body.contains(searchKeyword);
-						
-						if ( matched ) {
-							filteredArticles.add(article);
-						}
-					}
-				}
-				
-				
-				List<Article> sortedArticles = filteredArticles;
-
-				boolean orderByIdDesc = true;
-
-				if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
-					orderByIdDesc = false;
-				}
-
-				if (orderByIdDesc) {
-					sortedArticles = Util.reverseList(sortedArticles);
-				}
-
-				for (Article article : sortedArticles) {
-					System.out.printf("%d / %s\n", article.id, article.title);
-				}
+				actionUsrArticleList(rq, articles );
 
 			} else if (rq.getUrlPath().equals("/usr/article/detail")) {
 
@@ -135,6 +99,50 @@ public class Main {
 
 		System.out.println("== 프로그램 종료 == ");
 		sc.close();
+	}
+
+	private static void actionUsrArticleList(Rq rq, List<Article> articles) {
+		System.out.println("- 게시물 리스트 -");
+		System.out.println("-----------------");
+		System.out.println("번호 / 제목");
+		System.out.println("-----------------");
+		
+		Map<String, String> params = rq.getParams();		
+		
+		// 검색시작
+		List<Article> filteredArticles = articles;
+
+		if (params.containsKey("searchKeyword")) {
+			String searchKeyword = params.get("searchKeyword");
+
+			filteredArticles = new ArrayList<>();
+
+			for (Article article : articles) {
+				boolean matched = article.title.contains(searchKeyword) || article.body.contains(searchKeyword);
+
+				if (matched) {
+					filteredArticles.add(article);
+				}
+			}
+		}
+		// 검색 끝
+
+		List<Article> sortedArticles = filteredArticles;
+
+		boolean orderByIdDesc = true;
+
+		if (params.containsKey("orderBy") && params.get("orderBy").equals("idAsc")) {
+			orderByIdDesc = false;
+		}
+
+		if (orderByIdDesc) {
+			sortedArticles = Util.reverseList(sortedArticles);
+		}
+
+		for (Article article : sortedArticles) {
+			System.out.printf("%d / %s\n", article.id, article.title);
+		}
+		
 	}
 }
 
