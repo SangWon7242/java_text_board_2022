@@ -40,7 +40,7 @@ public class Main {
 			if (rq.getUrlPath().equals("exit")) {
 				break;
 			} else if (rq.getUrlPath().equals("/usr/article/list")) {
-				actionUsrArticleList(rq, articles );
+				actionUsrArticleList(rq, articles);
 
 			} else if (rq.getUrlPath().equals("/usr/article/detail")) {
 
@@ -76,22 +76,8 @@ public class Main {
 				System.out.printf("내용 : %s\n", article.body);
 
 			} else if (rq.getUrlPath().equals("/usr/article/write")) {
-				System.out.println("- 게시물 등록 - ");
-				System.out.printf("제목: ");
-				String title = sc.nextLine();
-				System.out.printf("내용: ");
-				String body = sc.nextLine();
-
-				int id = articleLastId + 1;
-				articleLastId = id;
-
-				Article article = new Article(id, title, body);
-
-				articles.add(article);
-
-				System.out.println("입력된 객체 : " + article);
-
-				System.out.printf("%d번 게시물이 입력되었습니다.\n", id);
+				actionUsrArticleWrite(rq, sc, articles, articleLastId);
+				articleLastId++;			
 			}
 
 			System.out.printf("입력된 명령어 : %s\n", cmd);
@@ -101,14 +87,32 @@ public class Main {
 		sc.close();
 	}
 
+	private static void actionUsrArticleWrite(Rq rq, Scanner sc, List<Article> articles, int articleLastId) {
+		System.out.println("- 게시물 등록 - ");
+		System.out.printf("제목: ");
+		String title = sc.nextLine();
+		System.out.printf("내용: ");
+		String body = sc.nextLine();
+
+		int id = articleLastId + 1;
+
+		Article article = new Article(id, title, body);
+
+		articles.add(article);
+
+		System.out.println("입력된 객체 : " + article);
+
+		System.out.printf("%d번 게시물이 입력되었습니다.\n", id);
+	}
+
 	private static void actionUsrArticleList(Rq rq, List<Article> articles) {
 		System.out.println("- 게시물 리스트 -");
 		System.out.println("-----------------");
 		System.out.println("번호 / 제목");
 		System.out.println("-----------------");
-		
-		Map<String, String> params = rq.getParams();		
-		
+
+		Map<String, String> params = rq.getParams();
+
 		// 검색시작
 		List<Article> filteredArticles = articles;
 
@@ -142,7 +146,7 @@ public class Main {
 		for (Article article : sortedArticles) {
 			System.out.printf("%d / %s\n", article.id, article.title);
 		}
-		
+
 	}
 }
 
